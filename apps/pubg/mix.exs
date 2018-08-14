@@ -1,9 +1,9 @@
-defmodule Bot.MixProject do
+defmodule Pubg.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :bot,
+      app: :pubg,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -18,7 +18,7 @@ defmodule Bot.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: {Bot.Application, []},
+      mod: {Pubg.Application, []},
       extra_applications: [:logger]
     ]
   end
@@ -29,10 +29,9 @@ defmodule Bot.MixProject do
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       # {:sibling_app_in_umbrella, in_umbrella: true},
-      {:nostrum, git: "https://github.com/Kraigie/nostrum.git"},
-      {:credo, "~> 0.10.0"},
       {:httpoison, "~> 1.2", override: true},
-      {:poison, "~> 4.0", override: true}
+      {:poison, "~> 4.0", override: true},
+      {:floki, "~> 0.20.3"}
     ]
   end
 end
