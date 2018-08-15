@@ -29,6 +29,7 @@ defmodule Bot.MixProject do
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       # {:sibling_app_in_umbrella, in_umbrella: true},
+      {:distillery, "~> 2.0", runtime: false},
       {:pubg, in_umbrella: true},
       {:nostrum, git: "https://github.com/Kraigie/nostrum.git"},
       {:credo, "~> 0.10.0"},

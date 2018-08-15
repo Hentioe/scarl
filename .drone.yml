@@ -1,0 +1,45 @@
+clone:
+  git:
+    image: plugins/git
+    tags: true
+
+pipeline:
+  restore-cache:
+    image: drillster/drone-volume-cache
+    restore: true
+    mount:
+      - /root/.mix
+      - deps
+    volumes:
+      - /data/cache/scarl:/cache
+
+  build:
+    image: bluerain/elixir-1.7-slim:mix-locals
+    when:
+      event: [push, tag, deployment]
+    commands:
+      - cp /home/app/config.secret.exs apps/bot/config/config.secret.exs
+      - mix deps.get
+      - MIX_ENV=prod mix cmd --app bot mix release
+    volumes:
+      - /data/apps/scarl/:/home/app
+
+  publish:
+      image: plugins/docker
+      when:
+        event: [push, tag, deployment]
+      repo: bluerain/scarl
+      auto_tag: true
+      dockerfile: Dockerfile
+      secrets: [ docker_username, docker_password ]
+      volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+
+  rebuild-cache:
+    image: drillster/drone-volume-cache
+    rebuild: true
+    mount:
+      - /root/.mix
+      - deps
+    volumes:
+      - /data/cache/scarl:/cache

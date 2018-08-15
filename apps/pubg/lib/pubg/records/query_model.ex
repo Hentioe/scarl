@@ -21,7 +21,7 @@ defmodule Pubg.Records.QueryModel do
   defstruct [:username, :season, :server, :mode, :queue_size, :queue_name]
 
   def create(props) do
-    username = Keyword.get(props, :username, "shroud")
+    username = Keyword.get(props, :username, "unknown")
     username = String.trim(username)
 
     season = Keyword.get(props, :season, default_season())
