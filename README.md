@@ -1,4 +1,4 @@
 # Scarl
 
-**TODO: Add description**
+**SCAR-L Discord 机器人**
 
