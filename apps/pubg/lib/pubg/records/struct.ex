@@ -51,6 +51,16 @@ defmodule Pubg.Records.Struct do
     topten_matches_cnt = stats["topten_matches_cnt"]
     win_matches_cnt = stats["win_matches_cnt"]
 
+    gen_rem_seconds = fn ->
+      i = rem(Kernel.trunc(time_survived_avg), 60)
+
+      cond do
+        i < 10 -> "0#{i}"
+        i < 0 -> "0"
+        true -> "#{i}"
+      end
+    end
+
     %__MODULE__{
       rating: rating,
       grade: grade,
@@ -65,10 +75,29 @@ defmodule Pubg.Records.Struct do
       longest_kill_max: longest_kill_max,
       matches_cnt: matches_cnt,
       rank_avg: Float.round(rank_avg, 1),
-      time_survived_avg:
-        "#{Kernel.trunc(time_survived_avg / 60)}:#{rem(Kernel.trunc(time_survived_avg), 60)}",
+      time_survived_avg: "#{Kernel.trunc(time_survived_avg / 60)}:#{gen_rem_seconds.()}",
       topten_matches_cnt: topten_matches_cnt,
       win_matches_cnt: win_matches_cnt
     }
+  end
+
+  def gen_records(records) do
+    "
+**评　　分**：#{records.rating}\n
+**评　　级**：#{records.grade}\n
+**　　K/D**：#{records.kda}\n
+**匹配次数**：#{records.matches_cnt}\n
+**前十次数**：#{records.topten_matches_cnt}\n
+**吃鸡次数**：#{records.win_matches_cnt}\n
+**击杀总数**：#{records.kills_sum}\n
+**助攻次数**：#{records.assists_sum}\n
+**爆头几率**：#{records.headshot_ratio}%\n
+**均场伤害**：#{records.damage_dealt_avg}\n
+**最多击杀**：#{records.kills_max}\n
+**生存时间**：#{records.time_survived_avg}\n
+**平均排名**：\##{records.rank_avg}
+    "
+    |> String.replace("\n\n", "\n")
+    |> String.trim()
   end
 end

@@ -18,7 +18,7 @@ defmodule Pubg.Records.QueryModel do
   end
 
   @default_server "as"
-  defstruct [:username, :season, :server, :queue_size, :mode]
+  defstruct [:username, :season, :server, :mode, :queue_size, :queue_name]
 
   def create(props) do
     username = Keyword.get(props, :username, "shroud")
@@ -31,12 +31,21 @@ defmodule Pubg.Records.QueryModel do
     queue_size = Keyword.get(props, :queue_size)
     mode = Keyword.get(props, :mode)
 
+    queue_name =
+      case queue_size do
+        1 -> "SOLO"
+        2 -> "DUO"
+        4 -> "SQUAD"
+        _ -> "UNKNOWN"
+      end
+
     %__MODULE__{
       username: username,
       season: season,
       server: server,
+      mode: mode,
       queue_size: queue_size,
-      mode: mode
+      queue_name: queue_name
     }
   end
 
@@ -66,7 +75,7 @@ defmodule Pubg.Records.QueryModel do
       ) do
     with {:ok, user_id} <- lookup_user_id_by_cache(username) || gen_user_id(model) do
       url =
-        "https://pubg.op.gg/api/users/#{user_id}/ranked-stats?season=#{season}&server=#{server}&queue_size=#{
+        "https://pubg.op.gg/api/users/#{user_id}/ranked-stats?season=#{season}&server=pc-#{server}&queue_size=#{
           queue_size
         }&mode=#{mode}"
 

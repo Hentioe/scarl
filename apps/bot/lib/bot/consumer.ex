@@ -33,27 +33,11 @@ defmodule Bot.Consumer do
           {:error, reason} -> reason
         end
 
-      title = "#{query.season} #{query.mode}-#{query.queue_size}"
+      title = "#{query.season} #{String.upcase(query.mode)}-#{query.queue_name}"
 
       content =
         if is_map(records) do
-          "
-**评　　分**：#{records.rating}\n
-**评　　级**：#{records.grade}\n
-**　　K/D**：#{records.kda}\n
-**匹配次数**：#{records.matches_cnt}\n
-**前十次数**：#{records.topten_matches_cnt}\n
-**吃鸡次数**：#{records.win_matches_cnt}\n
-**击杀总数**：#{records.kills_sum}\n
-**助攻次数**：#{records.assists_sum}\n
-**爆头几率**：#{records.headshot_ratio}%\n
-**均场伤害**：#{records.damage_dealt_avg}\n
-**最多击杀**：#{records.kills_max}\n
-**生存时间**：#{records.time_survived_avg}\n
-**平均排名**：\##{records.rank_avg}
-          "
-          |> String.replace("\n\n", "\n")
-          |> String.trim()
+          Pubg.Records.Struct.gen_records(records)
         else
           records
         end
@@ -62,24 +46,79 @@ defmodule Bot.Consumer do
     end
 
     put_field = fn embed, [title, content] ->
-      put_field(embed, title, content)
+      put_field(embed, title, content, true)
     end
 
     fields = [1, 2, 4] |> Enum.map(gen_field)
 
+    gen_avatar_url = fn ->
+      format =
+        case msg.author.avatar do
+          <<"a_", _rest::binary>> -> "gif"
+          _ -> "webp"
+        end
+
+      "https://cdn.discordapp.com/avatars/#{msg.author.id}/#{msg.author.avatar}.#{format}?size=64"
+    end
+
     embed =
       %Nostrum.Struct.Embed{}
-      |> put_title(":frog: #{username} 战绩(#{server})")
+      |> put_title(":frog: #{username} 战绩 (#{String.upcase(server)})")
       |> put_color(6_271_715)
       |> put_field.(Enum.at(fields, 0))
       |> put_field.(Enum.at(fields, 1))
       |> put_field.(Enum.at(fields, 2))
+      |> put_footer("注意：可能存在更新延迟。\t来源: pubg.op.gg", gen_avatar_url.())
 
     Api.create_message(msg.channel_id, embed: embed)
   end
 
-  def handle_flag(:help, _args, msg) do
-    Api.create_message(msg.channel_id, "我是一条帮助消息")
+  def handle_flag(:help, args, msg) do
+    msg_content =
+      if length(args) > 0 do
+        gen_func_help_msg(hd(args))
+      else
+        "
+欢迎使用 SCAR-L 机器人，这里是帮助信息。当前机器人所支持的功能有：
+```
+1. welcome（新人进服提醒）
+2. records（PUBG 战绩查询）
+3. help   （功能帮助）
+```
+使用 `scar.help [功能名称]` 可以查询具体功能的详细用法，例如 `scar.help records`，祝您使用愉快。
+    "
+        |> String.trim()
+      end
+
+    Api.create_message(msg.channel_id, msg_content)
+  end
+
+  def gen_func_help_msg(func_name) do
+    case func_name do
+      "welcome" ->
+        "
+`welcome` 功能的目的是为每一个进服的小伙伴发去一个附带@的欢迎消息，还可以用于向新人阐述服务器规则。
+        "
+        |> String.trim()
+
+      "records" ->
+        "
+`records` 指令用于查询 PUBG 战绩，它按顺序支持三个参数（可都省略，有默认值）：
+```
+1. 用户名，无大小写区分，默认值：Discord 昵称
+2. 游戏模式，fpp/tpp，默认值：tpp
+3. 服务器，as/sea/na，默认值：as
+```
+指令结构：`scar.records [用户名] [游戏模式] [服务器]`，举例：`scar.records shroud fpp na`
+        "
+        |> String.trim()
+
+      "help" ->
+        "使用 help 功能查询 help 的用法是无效的，请直接使用 `scar` 指令"
+
+      _ ->
+        "您要咨询的 #{func_name} 功能无效，是不是输入错了？"
+    end
   end
 
   def handle_onlyat(msg) do
@@ -94,18 +133,62 @@ defmodule Bot.Consumer do
     nil
   end
 
-  @scar_binary ".scar"
+  @scar_binary "scar"
   def handle_event({:MESSAGE_CREATE, {msg}, _ws_state}) do
-    case msg.content do
-      <<@scar_binary, 32, data::binary>> ->
-        routing_in_message(data, msg)
+    routed =
+      case msg.content do
+        <<@scar_binary, 46, data::binary>> ->
+          routing_in_message(data, msg)
 
-      <<@scar_binary>> ->
-        handle_onlyat(msg)
+        <<@scar_binary>> ->
+          handle_onlyat(msg)
 
-      _ ->
-        :ignore
+        _ ->
+          :no_routing
+      end
+
+    if routed == :no_routing do
+      handle_no_routed_msg(msg)
+    else
+      routed
     end
+  end
+
+  @welcome_channel_id 425_199_707_829_043_201
+  def handle_no_routed_msg(msg) do
+    if msg.channel_id == @welcome_channel_id do
+      welcome(msg)
+    else
+      :ignore
+    end
+  end
+
+  def welcome(msg) do
+    {:ok, client} = Api.get_current_user()
+
+    if msg.author.id == client.id do
+      :ignore
+    else
+      welcome(msg, client)
+    end
+  end
+
+  @author_id "379265518907162637"
+  @chat_channel_id "379541650290245634"
+  def welcome(msg, client) do
+    msg_content =
+      if msg.content == "" do
+        "
+热烈欢迎新人 <@#{msg.author.id}> 来到这里！我是由 <@#{@author_id}> 所开发的
+专属此服务器的机器人<#{client.username}>，
+记得转到 <\##{@chat_channel_id}> 跟大家交流哦～
+  "
+        |> String.trim()
+      else
+        "<@#{msg.author.id}> 记得转到 <\##{@chat_channel_id}> 跟大家交流哦～"
+      end
+
+    Api.create_message(msg.channel_id, msg_content)
   end
 
   def handle_event(_event) do
