@@ -93,10 +93,34 @@ defmodule Bot.Consumer do
       length(args) == 2 ->
         [user, limit] = args
         limit = String.to_integer(limit)
-        [[_, id]] = Regex.scan(~r/<@(\d+)>/, user)
+
+        user_match =
+          (fn ->
+             rs = Regex.scan(~r/<@(\d+)>/, user)
+
+             if length(rs) > 0 do
+               [[_, id]] = rs
+               {:id, id}
+             else
+               [[_, nickname, discriminator]] = Regex.scan(~r/@([^#]+)#(\d+)/, user)
+
+               {:username_discriminator, nickname, discriminator}
+             end
+           end).()
+
+        mached_msg_author? = fn user_msg ->
+          case user_match do
+            {:id, id} ->
+              Integer.to_string(user_msg.author.id) == id
+
+            {:username_discriminator, username, discriminator} ->
+              user_msg.author.username == username &&
+                user_msg.author.discriminator == discriminator
+          end
+        end
 
         if_same_id_execute_delete = fn user_msg ->
-          if Integer.to_string(user_msg.author.id) == id do
+          if mached_msg_author?.(user_msg) do
             Api.delete_message(user_msg)
           else
             :ignore
