@@ -8,6 +8,8 @@ defmodule Bot.Consumer do
   import Nostrum.Struct.Embed
   alias Pubg.Records.{QueryModel}
 
+  @author_id "379265518907162637"
+
   def start_link do
     Consumer.start_link(__MODULE__, name: __MODULE__)
   end
@@ -83,6 +85,58 @@ defmodule Bot.Consumer do
     Api.create_message(msg.channel_id, embed: embed)
   end
 
+  def handle_flag(:clean, args, msg) do
+    cond do
+      Integer.to_string(msg.author.id) != @author_id ->
+        Api.create_message(msg.channel_id, "您没有权限使用删除指令，因为它的风险很高。")
+
+      length(args) == 2 ->
+        [user, limit] = args
+        limit = String.to_integer(limit)
+        [[_, id]] = Regex.scan(~r/<@(\d+)>/, user)
+
+        if_same_id_execute_delete = fn user_msg ->
+          if Integer.to_string(user_msg.author.id) == id do
+            Api.delete_message(user_msg)
+          else
+            :ignore
+          end
+        end
+
+        {:ok, msg_list} = Api.get_channel_messages(msg.channel_id, limit + 1)
+
+        gen_response_result = fn results ->
+          executed_count = Enum.count(results, &(&1 != :ignore))
+          deleted_count = Enum.count(results, &(&1 == {:ok}))
+          error_count = Enum.count(results, &([&1][:error] != nil))
+
+          resp_content =
+            "扫描 #{length(results)} 条消息，执行删除 #{executed_count} 条消息，实际删除 #{deleted_count} 条消息，删除失败 #{
+              error_count
+            } 条。"
+
+          resp_content =
+            if error_count > 0,
+              do: resp_content <> "（出现删除失败可能是网络问题，建议再次输入删除指令清空没删掉的消息）",
+              else: resp_content
+
+          resp_content
+        end
+
+        msg_content =
+          msg_list
+          |> Enum.map(if_same_id_execute_delete)
+          |> gen_response_result.()
+
+        Api.create_message(msg.channel_id, msg_content)
+
+      true ->
+        Api.create_message(msg.channel_id, "您输入的参数不正确！")
+    end
+
+    :ignore
+  end
+
   def gen_avatar_url(user, size \\ 64) do
     "#{Nostrum.Struct.User.avatar_url(user)}?size=#{size}"
   end
@@ -146,7 +200,6 @@ defmodule Bot.Consumer do
     end
   end
 
-  @author_id "379265518907162637"
   @chat_channel_id "379541650290245634"
   def welcome(msg, client) do
     msg_content =

@@ -13,7 +13,8 @@ defmodule Bot.FlagRouter do
 
       @allow_flag_list [
         "help",
-        "records"
+        "records",
+        "clean"
       ]
 
       defp routing_in_message(data, msg) when is_binary(data) do
