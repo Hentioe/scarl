@@ -74,7 +74,7 @@ defmodule Pubg.Records.Struct do
       kills_sum: kills_sum,
       longest_kill_max: longest_kill_max,
       matches_cnt: matches_cnt,
-      rank_avg: Float.round(rank_avg, 1),
+      rank_avg: Float.round(rank_avg / 1, 1),
       time_survived_avg: "#{Kernel.trunc(time_survived_avg / 60)}:#{gen_rem_seconds.()}",
       topten_matches_cnt: topten_matches_cnt,
       win_matches_cnt: win_matches_cnt
