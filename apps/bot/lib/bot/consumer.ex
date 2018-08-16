@@ -12,6 +12,28 @@ defmodule Bot.Consumer do
     Consumer.start_link(__MODULE__, name: __MODULE__)
   end
 
+  def handle_flag(:help, args, msg) do
+    msg_content =
+      if length(args) > 0 do
+        gen_func_help_msg(hd(args))
+      else
+        "
+欢迎使用 SCAR-L 机器人，这里是帮助信息。当前机器人所支持的功能有：
+
+```
+1. welcome（新人进服提醒）
+2. records（PUBG 战绩查询）
+3. help   （功能帮助）
+```
+
+使用 `scar.help [功能名称]` 可以查询具体功能的详细用法，例如 `scar.help records`，祝您使用愉快。
+    "
+        |> String.trim()
+      end
+
+    Api.create_message(msg.channel_id, msg_content)
+  end
+
   @default_server "as"
   @default_mode "tpp"
   def handle_flag(:records, args, msg) do
@@ -51,16 +73,6 @@ defmodule Bot.Consumer do
 
     fields = [1, 2, 4] |> Enum.map(gen_field)
 
-    gen_avatar_url = fn ->
-      format =
-        case msg.author.avatar do
-          <<"a_", _rest::binary>> -> "gif"
-          _ -> "webp"
-        end
-
-      "https://cdn.discordapp.com/avatars/#{msg.author.id}/#{msg.author.avatar}.#{format}?size=64"
-    end
-
     embed =
       %Nostrum.Struct.Embed{}
       |> put_title(":frog: #{username} 战绩 (#{String.upcase(server)})")
@@ -68,29 +80,13 @@ defmodule Bot.Consumer do
       |> put_field.(Enum.at(fields, 0))
       |> put_field.(Enum.at(fields, 1))
       |> put_field.(Enum.at(fields, 2))
-      |> put_footer("注意：可能存在更新延迟。\t来源: pubg.op.gg", gen_avatar_url.())
+      |> put_footer("注意：可能存在更新延迟。\t来源: pubg.op.gg", gen_avatar_url(msg.author))
 
     Api.create_message(msg.channel_id, embed: embed)
   end
 
-  def handle_flag(:help, args, msg) do
-    msg_content =
-      if length(args) > 0 do
-        gen_func_help_msg(hd(args))
-      else
-        "
-欢迎使用 SCAR-L 机器人，这里是帮助信息。当前机器人所支持的功能有：
-```
-1. welcome（新人进服提醒）
-2. records（PUBG 战绩查询）
-3. help   （功能帮助）
-```
-使用 `scar.help [功能名称]` 可以查询具体功能的详细用法，例如 `scar.help records`，祝您使用愉快。
-    "
-        |> String.trim()
-      end
-
-    Api.create_message(msg.channel_id, msg_content)
+  def gen_avatar_url(user, size \\ 64) do
+    "#{Nostrum.Struct.User.avatar_url(user)}?size=#{size}"
   end
 
   def gen_func_help_msg(func_name) do
@@ -133,27 +129,6 @@ defmodule Bot.Consumer do
     nil
   end
 
-  @scar_binary "scar"
-  def handle_event({:MESSAGE_CREATE, {msg}, _ws_state}) do
-    routed =
-      case msg.content do
-        <<@scar_binary, 46, data::binary>> ->
-          routing_in_message(data, msg)
-
-        <<@scar_binary>> ->
-          handle_onlyat(msg)
-
-        _ ->
-          :no_routing
-      end
-
-    if routed == :no_routing do
-      handle_no_routed_msg(msg)
-    else
-      routed
-    end
-  end
-
   @welcome_channel_id 425_199_707_829_043_201
   def handle_no_routed_msg(msg) do
     if msg.channel_id == @welcome_channel_id do
@@ -189,6 +164,27 @@ defmodule Bot.Consumer do
       end
 
     Api.create_message(msg.channel_id, msg_content)
+  end
+
+  @scar_binary "scar"
+  def handle_event({:MESSAGE_CREATE, {msg}, _ws_state}) do
+    routed =
+      case msg.content do
+        <<@scar_binary, 46, data::binary>> ->
+          routing_in_message(data, msg)
+
+        <<@scar_binary>> ->
+          handle_onlyat(msg)
+
+        _ ->
+          :no_routing
+      end
+
+    if routed == :no_routing do
+      handle_no_routed_msg(msg)
+    else
+      routed
+    end
   end
 
   def handle_event(_event) do
