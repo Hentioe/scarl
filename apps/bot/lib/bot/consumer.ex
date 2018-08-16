@@ -19,13 +19,11 @@ defmodule Bot.Consumer do
       else
         "
 欢迎使用 SCAR-L 机器人，这里是帮助信息。当前机器人所支持的功能有：
-
 ```
 1. welcome（新人进服提醒）
 2. records（PUBG 战绩查询）
 3. help   （功能帮助）
 ```
-
 使用 `scar.help [功能名称]` 可以查询具体功能的详细用法，例如 `scar.help records`，祝您使用愉快。
     "
         |> String.trim()
