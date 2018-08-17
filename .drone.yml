@@ -18,7 +18,7 @@ pipeline:
     when:
       event: [push, tag, deployment]
     commands:
-      - cp /home/app/config.secret.exs apps/bot/config/config.secret.exs
+      - cp /home/app/prod.secret.exs apps/bot/config/prod.secret.exs
       - mix deps.get
       - MIX_ENV=prod mix cmd --app bot mix release
     volumes:
