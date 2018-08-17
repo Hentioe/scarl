@@ -28,4 +28,15 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env()}.exs"
-import_config "#{Mix.env()}.config.exs"
+
+# --- *.secret.ex 模板 ---
+
+# config :nostrum,
+#   # The token of your bot as a string
+#   token: "<BOT-TOKEN>",
+#   # The number of shards you want to run your bot under, or :auto.
+#   num_shards: 2
+
+# --- *.secret.ex 模板 ---
+
+import_config "#{Mix.env()}.exs"
