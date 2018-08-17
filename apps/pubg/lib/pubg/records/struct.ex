@@ -64,7 +64,7 @@ defmodule Pubg.Records.Struct do
     %__MODULE__{
       rating: rating,
       grade: grade,
-      kda: Float.round(kills_sum / matches_cnt, 2),
+      kda: Float.round((kills_sum + assists_sum) / deaths_sum, 2),
       headshot_ratio: Float.round(headshot_kills_sum / kills_sum * 100, 1),
       assists_sum: assists_sum,
       damage_dealt_avg: Kernel.trunc(damage_dealt_avg),
@@ -85,7 +85,7 @@ defmodule Pubg.Records.Struct do
     "
 **评　　分**：#{records.rating}\n
 **评　　级**：#{records.grade}\n
-**　　K/D**：#{records.kda}\n
+**　　KDA**：#{records.kda}\n
 **匹配次数**：#{records.matches_cnt}\n
 **前十次数**：#{records.topten_matches_cnt}\n
 **吃鸡次数**：#{records.win_matches_cnt}\n
