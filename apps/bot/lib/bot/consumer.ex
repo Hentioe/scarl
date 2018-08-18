@@ -4,6 +4,7 @@ defmodule Bot.Consumer do
   """
   use Nostrum.Consumer
   use Bot.{FlagRouter}
+  alias Bot.{ConfigModel}
   alias Nostrum.Api
   import Nostrum.Struct.Embed
   alias Pubg.Records.{QueryModel}
@@ -11,8 +12,37 @@ defmodule Bot.Consumer do
   @author_id "379265518907162637"
 
   def start_link do
+    init_table(ConfigModel.read_by_env())
     Consumer.start_link(__MODULE__, name: __MODULE__)
   end
+
+  @config_table :bot_config
+  def init_table(config) do
+    :ets.new(@config_table, [:named_table, :public])
+
+    :ets.insert(
+      @config_table,
+      {:prefix_name, [config.prefix_name, byte_size(config.prefix_name)]}
+    )
+
+    :ets.insert(
+      @config_table,
+      {:invoke_mark, [config.invoke_mark, byte_size(config.invoke_mark)]}
+    )
+
+    :ets.insert(@config_table, {:args_split, config.args_split})
+  end
+
+  def get_config_item(key) do
+    case :ets.lookup(@config_table, key) do
+      [{^key, value}] -> value
+      [] -> nil
+    end
+  end
+
+  def get_prefix_name, do: get_config_item(:prefix_name)
+  def get_invoke_mark, do: get_config_item(:invoke_mark)
+  def get_args_split, do: get_config_item(:args_split)
 
   def handle_flag(:help, args, msg) do
     msg_content =
@@ -241,14 +271,17 @@ defmodule Bot.Consumer do
     Api.create_message(msg.channel_id, msg_content)
   end
 
-  @scar_binary "scar"
   def handle_event({:MESSAGE_CREATE, {msg}, _ws_state}) do
+    [prefix_name, prefix_name_size] = get_prefix_name()
+    [invoke_mark, invoke_mark_size] = get_invoke_mark()
+
     routed =
       case msg.content do
-        <<@scar_binary, 46, data::binary>> ->
+        <<^prefix_name::binary-size(prefix_name_size), ^invoke_mark::binary-size(invoke_mark_size),
+          data::binary>> ->
           routing_in_message(data, msg)
 
-        <<@scar_binary>> ->
+        <<^prefix_name::binary-size(prefix_name_size)>> ->
           handle_onlyat(msg)
 
         _ ->

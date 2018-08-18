@@ -18,7 +18,7 @@ defmodule Bot.FlagRouter do
       ]
 
       defp routing_in_message(data, msg) when is_binary(data) do
-        [flag | args] = String.split(data, " ")
+        [flag | args] = String.split(data, Bot.Consumer.get_args_split())
 
         cond do
           Enum.member?(@allow_flag_list, flag) ->
