@@ -6,6 +6,8 @@ config :bot,
   # 功能调用符号
   invoke_mark: ".",
   # 参数分隔符号
-  args_split: " "
+  args_split: " ",
+  # 游戏状态
+  game_status: "scart.help | Testing"
 
 import_config "./dev.secret.exs"

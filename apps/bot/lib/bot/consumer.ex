@@ -14,7 +14,7 @@ defmodule Bot.Consumer do
   def start_link do
     init_table(ConfigModel.read_by_env())
     started = Consumer.start_link(__MODULE__, name: __MODULE__)
-    Api.update_status(:online, " scar.help | @Hentioe_Cl") |> IO.inspect()
+    Api.update_status(:online, " #{get_game_status()}")
     started
   end
 
@@ -32,6 +32,7 @@ defmodule Bot.Consumer do
       {:invoke_mark, [config.invoke_mark, byte_size(config.invoke_mark)]}
     )
 
+    :ets.insert(@config_table, {:game_status, config.game_status})
     :ets.insert(@config_table, {:args_split, config.args_split})
   end
 
@@ -45,25 +46,59 @@ defmodule Bot.Consumer do
   def get_prefix_name, do: get_config_item(:prefix_name)
   def get_invoke_mark, do: get_config_item(:invoke_mark)
   def get_args_split, do: get_config_item(:args_split)
+  def get_game_status, do: get_config_item(:game_status)
 
   def handle_flag(:help, args, msg) do
-    msg_content =
+    message =
       if length(args) > 0 do
         gen_func_help_msg(hd(args))
       else
+        title = "欢迎使用 SCAR-L 机器人，这里是帮助信息"
+        [prefix_name, _] = get_prefix_name()
+        [invoke_mark, _] = get_invoke_mark()
+        prefix_invoke = "#{prefix_name}#{invoke_mark}"
+
+        gen_info_field = fn embed ->
+          content = "
+** 程序版本 **: alpha
+** 上次重启 **: 2018-10-10:12:00:01　
+          "
+          put_field(embed, "运行时", content <> "\n")
+        end
+
+        gen_feature_field = fn embed ->
+          content = "
+** #{prefix_invoke}welcome ** (进服通知)
+** #{prefix_invoke}clean** (消息清理)
+** #{prefix_invoke}records** (战绩查询)
+** #{prefix_invoke}help** (功能帮助)
         "
-欢迎使用 SCAR-L 机器人，这里是帮助信息。当前机器人所支持的功能有：
-```
-1. welcome（新人进服提醒）
-2. records（PUBG 战绩查询）
-3. help   （功能帮助）
-```
-使用 `scar.help [功能名称]` 可以查询具体功能的详细用法，例如 `scar.help records`，祝您使用愉快。
-    "
-        |> String.trim()
+
+          put_field(embed, "功能列表", content <> "\n")
+        end
+
+        gen_opensource_field = fn embed ->
+          content = "
+** 作者 **: Hentioe_Cl#0120
+** 代码 **: https://github.com/Hentioe/scarl
+** 许可 **: MIT
+"
+          put_field(embed, "开源信息", content <> "\n")
+        end
+
+        embed =
+          %Nostrum.Struct.Embed{}
+          |> put_title(title)
+          |> put_color(6_271_715)
+          |> gen_info_field.()
+          |> gen_feature_field.()
+          |> gen_opensource_field.()
+          |> put_footer("您可以使用 '#{prefix_invoke}help [功能名称]' 查看具体功能的详细用法以及指令示例", gen_avatar_url(msg.author))
+
+        [embed: embed]
       end
 
-    Api.create_message(msg.channel_id, msg_content)
+    Api.create_message(msg.channel_id, message)
   end
 
   @default_server "as"

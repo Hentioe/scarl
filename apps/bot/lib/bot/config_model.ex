@@ -6,7 +6,7 @@ defmodule Bot.ConfigModel do
   @default_invoke_mark "."
   @default_args_split " "
 
-  defstruct [:prefix_name, :invoke_mark, :args_split]
+  defstruct [:prefix_name, :invoke_mark, :args_split, :game_status]
 
   defp get_item_by_bot_config(key, default) do
     Application.get_env(:bot, key, default)
@@ -16,11 +16,13 @@ defmodule Bot.ConfigModel do
     prefix_name = get_item_by_bot_config(:prefix_name, @default_prefix_name)
     invoke_mark = get_item_by_bot_config(:invoke_mark, @default_invoke_mark)
     args_split = get_item_by_bot_config(:args_split, @default_args_split)
+    game_status = get_item_by_bot_config(:game_status, "#{prefix_name}#{invoke_mark}help")
 
     %__MODULE__{
       prefix_name: prefix_name,
       invoke_mark: invoke_mark,
-      args_split: args_split
+      args_split: args_split,
+      game_status: game_status
     }
   end
 end
