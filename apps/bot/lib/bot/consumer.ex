@@ -34,6 +34,8 @@ defmodule Bot.Consumer do
 
     :ets.insert(@config_table, {:game_status, config.game_status})
     :ets.insert(@config_table, {:args_split, config.args_split})
+    today = DateTime.utc_now()
+    :ets.insert(@config_table, {:last_restart_date, "#{today.year}-#{today.month}-#{today.day}"})
   end
 
   def get_config_item(key) do
@@ -47,6 +49,7 @@ defmodule Bot.Consumer do
   def get_invoke_mark, do: get_config_item(:invoke_mark)
   def get_args_split, do: get_config_item(:args_split)
   def get_game_status, do: get_config_item(:game_status)
+  def get_last_restart_date, do: get_config_item(:last_restart_date)
 
   def handle_flag(:help, args, msg) do
     message =
@@ -61,7 +64,7 @@ defmodule Bot.Consumer do
         gen_info_field = fn embed ->
           content = "
 ** 程序版本 **: alpha
-** 上次重启 **: 2018-10-10:12:00:01　
+** 上次重启 **: #{get_last_restart_date()}　
           "
           put_field(embed, "运行时", content <> "\n")
         end
@@ -93,7 +96,10 @@ defmodule Bot.Consumer do
           |> gen_info_field.()
           |> gen_feature_field.()
           |> gen_opensource_field.()
-          |> put_footer("您可以使用 '#{prefix_invoke}help [功能名称]' 查看具体功能的详细用法以及指令示例", gen_avatar_url(msg.author))
+          |> put_footer(
+            "您可以使用 '#{prefix_invoke}help [功能名称]' 查看具体功能的详细用法以及指令示例",
+            gen_avatar_url(msg.author)
+          )
 
         [embed: embed]
       end
