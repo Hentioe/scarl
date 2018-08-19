@@ -13,7 +13,9 @@ defmodule Bot.Consumer do
 
   def start_link do
     init_table(ConfigModel.read_by_env())
-    Consumer.start_link(__MODULE__, name: __MODULE__)
+    started = Consumer.start_link(__MODULE__, name: __MODULE__)
+    Api.update_status(:online, " scar.help | @Hentioe_Cl") |> IO.inspect()
+    started
   end
 
   @config_table :bot_config
@@ -277,8 +279,8 @@ defmodule Bot.Consumer do
 
     routed =
       case msg.content do
-        <<^prefix_name::binary-size(prefix_name_size), ^invoke_mark::binary-size(invoke_mark_size),
-          data::binary>> ->
+        <<^prefix_name::binary-size(prefix_name_size),
+          ^invoke_mark::binary-size(invoke_mark_size), data::binary>> ->
           routing_in_message(data, msg)
 
         <<^prefix_name::binary-size(prefix_name_size)>> ->
