@@ -3,7 +3,7 @@ defmodule Bot.Supervisor do
   Bot 监督树
   """
   use Supervisor
-  alias Bot.{Consumer}
+  alias Bot.{RouterManager, Consumer}
 
   def start_link do
     Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -11,7 +11,8 @@ defmodule Bot.Supervisor do
 
   def init(:ok) do
     children = [
-      {Consumer, []}
+      {Consumer, []},
+      {RouterManager, []}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
