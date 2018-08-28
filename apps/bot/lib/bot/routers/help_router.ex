@@ -1,4 +1,7 @@
 defmodule Bot.Router.HelpRouter do
+  @moduledoc """
+  Bot help 指令路由器
+  """
   alias Nostrum.Api
   import Nostrum.Struct.Embed
   use Bot.FlagRouter
@@ -9,7 +12,6 @@ defmodule Bot.Router.HelpRouter do
   def handle_flag(args, msg) do
     message =
       if length(args) > 0 do
-        alias Bot.{Consumer}
         gen_func_help_msg(hd(args))
       else
         title = "欢迎使用 SCAR-L 机器人，这里是帮助信息"

@@ -1,11 +1,10 @@
 defmodule Bot.Consumer do
   @moduledoc """
-  Bot 消费消息
+  Bot 消息消费方
   """
   use Nostrum.Consumer
   alias Bot.{RouterManager, ConfigModel}
   alias Nostrum.Api
-  import Nostrum.Struct.Embed
 
   def start_link do
     init_table(ConfigModel.read_by_env())

@@ -1,7 +1,9 @@
 defmodule Bot.Router.CleanRouter do
+  @moduledoc """
+  Bot clean 指令路由器
+  """
   alias Nostrum.Api
   use Bot.FlagRouter
-  alias Bot.{Consumer}
 
   init_flag(:clean)
 

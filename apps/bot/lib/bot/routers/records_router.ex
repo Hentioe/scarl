@@ -1,4 +1,7 @@
 defmodule Bot.Router.RecordsRouter do
+  @moduledoc """
+  Bot records 指令路由器
+  """
   alias Nostrum.Api
   import Nostrum.Struct.Embed
   use Bot.FlagRouter

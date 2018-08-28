@@ -1,4 +1,7 @@
 defmodule Bot.RouterManager do
+  @moduledoc """
+  Bot 指令消息路由管理器
+  """
   alias Nostrum.Api
   use Agent
   alias Bot.{Consumer}
@@ -34,14 +37,12 @@ defmodule Bot.RouterManager do
         prefix = hd(fill_invocation)
         args = tl(fill_invocation)
 
-        cond do
-          # 指令路由
-          Enum.member?(@allow_flags, prefix) ->
-            routing_msg(prefix, args, msg)
-
+        if Enum.member?(@allow_flags, prefix) do
+          # 路由指令
+          routing_msg(prefix, args, msg)
+        else
           # 未知指令
-          true ->
-            handle_unknown_flag(prefix, args, msg)
+          handle_unknown_flag(prefix, args, msg)
         end
 
       <<^prefix_name::binary-size(prefix_name_size)>> ->

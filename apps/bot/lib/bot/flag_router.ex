@@ -1,4 +1,7 @@
 defmodule Bot.FlagRouter do
+  @moduledoc """
+  Bot 指令路由器
+  """
   defmacro __using__(_opts) do
     quote do
       @behaviour Bot.FlagRouter
