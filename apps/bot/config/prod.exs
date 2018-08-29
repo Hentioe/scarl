@@ -1,7 +1,7 @@
 import Mix.Config
 
 config :bot,
-# 前缀名称(测试环境建议后缀字母t)
+  # 前缀名称(测试环境建议后缀字母t)
   prefix_name: "scar",
   # 功能调用符号
   invoke_mark: ".",
