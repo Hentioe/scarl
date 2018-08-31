@@ -1,6 +1,6 @@
 defmodule Bot.Consumer do
   @moduledoc """
-  Bot 消息消费方
+  Bot 消息消费模块
   """
   use Nostrum.Consumer
   alias Bot.{RouterManager, ConfigModel}
