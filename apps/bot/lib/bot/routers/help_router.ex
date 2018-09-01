@@ -56,7 +56,7 @@ defmodule Bot.Router.HelpRouter do
           |> gen_opensource_field.()
           |> put_footer(
             "您可以使用 '#{prefix_invoke}help [功能名称]' 查看具体功能的详细用法以及指令示例",
-            Consumer.gen_avatar_url(msg.author)
+            Bot.gen_avatar_url(msg.author)
           )
 
         [embed: embed]

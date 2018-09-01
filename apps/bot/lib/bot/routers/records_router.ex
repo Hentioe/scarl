@@ -5,7 +5,6 @@ defmodule Bot.Router.RecordsRouter do
   alias Nostrum.Api
   import Nostrum.Struct.Embed
   use Bot.FlagRouter
-  alias Bot.{Consumer}
   alias Pubg.Records.{QueryModel}
 
   init_flag(:records)
@@ -56,7 +55,7 @@ defmodule Bot.Router.RecordsRouter do
       |> put_field.(Enum.at(fields, 0))
       |> put_field.(Enum.at(fields, 1))
       |> put_field.(Enum.at(fields, 2))
-      |> put_footer("注意：可能存在更新延迟。\t来源: pubg.op.gg", Consumer.gen_avatar_url(msg.author))
+      |> put_footer("注意：可能存在更新延迟。\t来源: pubg.op.gg", Bot.gen_avatar_url(msg.author))
 
     Api.create_message(msg.channel_id, embed: embed)
   end

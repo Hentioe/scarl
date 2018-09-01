@@ -46,10 +46,6 @@ defmodule Bot.Consumer do
   def get_game_status, do: get_config_item(:game_status)
   def get_last_restart_date, do: get_config_item(:last_restart_date)
 
-  def gen_avatar_url(user, size \\ 64) do
-    "#{Nostrum.Struct.User.avatar_url(user)}?size=#{size}"
-  end
-
   def handle_event({:MESSAGE_CREATE, {msg}, _ws_state}) do
     RouterManager.route_message(msg)
   end
