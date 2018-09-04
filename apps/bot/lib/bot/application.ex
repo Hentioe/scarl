@@ -12,7 +12,7 @@ defmodule Bot.Application do
         RouterManager.add_router(HelpRouter)
         RouterManager.add_router(RecordsRouter)
         RouterManager.add_router(CleanRouter)
-        RouterManager.add_router(WelcomeRouter)
+        # RouterManager.add_router(WelcomeRouter)
         {:ok, pid}
 
       error ->
