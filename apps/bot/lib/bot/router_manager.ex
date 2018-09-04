@@ -9,7 +9,8 @@ defmodule Bot.RouterManager do
   @allow_flags [
     "help",
     "records",
-    "clean"
+    "clean",
+    "welcome"
   ]
   @author_id "379265518907162637"
 

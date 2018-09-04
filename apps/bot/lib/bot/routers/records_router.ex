@@ -7,7 +7,7 @@ defmodule Bot.Router.RecordsRouter do
   use Bot.FlagRouter
   alias Pubg.Records.{QueryModel}
 
-  init_flag(:records)
+  init_flag :records
 
   @default_server "as"
   @default_mode "tpp"

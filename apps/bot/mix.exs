@@ -19,7 +19,7 @@ defmodule Bot.MixProject do
   def application do
     [
       mod: {Bot.Application, []},
-      extra_applications: [:logger]
+      extra_applications: [:logger, :storage]
     ]
   end
 
@@ -31,8 +31,8 @@ defmodule Bot.MixProject do
       # {:sibling_app_in_umbrella, in_umbrella: true},
       {:distillery, "~> 2.0", runtime: false},
       {:pubg, in_umbrella: true},
+      {:storage, in_umbrella: true},
       {:nostrum, git: "https://github.com/Kraigie/nostrum.git"},
-      {:credo, "~> 0.10.0"},
       {:httpoison, "~> 1.2", override: true},
       {:poison, "~> 4.0", override: true}
     ]

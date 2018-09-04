@@ -15,6 +15,8 @@ defmodule Scarl.MixProject do
   #
   # Run "mix help deps" for examples and options.
   defp deps do
-    []
+    [
+      {:credo, "~> 0.10.0"}
+    ]
   end
 end

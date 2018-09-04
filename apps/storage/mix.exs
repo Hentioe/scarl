@@ -1,9 +1,9 @@
-defmodule Store.MixProject do
+defmodule Storage.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :store,
+      app: :storage,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -18,7 +18,8 @@ defmodule Store.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      mod: {Storage.Application, []},
+      extra_applications: [:logger, :sqlite_ecto2, :ecto]
     ]
   end
 

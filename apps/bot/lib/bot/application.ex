@@ -4,7 +4,7 @@ defmodule Bot.Application do
   """
   use Application
   alias Bot.{RouterManager}
-  alias Bot.Router.{HelpRouter, RecordsRouter, CleanRouter}
+  alias Bot.Router.{HelpRouter, RecordsRouter, CleanRouter, WelcomeRouter}
 
   def start(_type, _args) do
     case Bot.Supervisor.start_link() do
@@ -12,6 +12,7 @@ defmodule Bot.Application do
         RouterManager.add_router(HelpRouter)
         RouterManager.add_router(RecordsRouter)
         RouterManager.add_router(CleanRouter)
+        RouterManager.add_router(WelcomeRouter)
         {:ok, pid}
 
       error ->

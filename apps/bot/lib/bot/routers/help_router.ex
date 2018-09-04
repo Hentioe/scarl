@@ -7,7 +7,7 @@ defmodule Bot.Router.HelpRouter do
   use Bot.FlagRouter
   alias Bot.{Consumer}
 
-  init_flag(:help)
+  init_flag :help
 
   def handle_flag(args, msg) do
     message =

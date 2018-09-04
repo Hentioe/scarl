@@ -5,7 +5,7 @@ defmodule Bot.Router.CleanRouter do
   alias Nostrum.Api
   use Bot.FlagRouter
 
-  init_flag(:clean)
+  init_flag :clean
 
   @author_id "379265518907162637"
   def handle_flag(args, msg) do

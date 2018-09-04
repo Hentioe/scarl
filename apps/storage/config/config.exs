@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :store, key: :value
+#     config :storage, key: :value
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:store, :key)
+#     Application.get_env(:storage, :key)
 #
 # You can also configure a 3rd-party app:
 #
@@ -28,3 +28,8 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env()}.exs"
+config :storage, Storage.Repo,
+  adapter: Sqlite.Ecto2,
+  database: "scarl.sqlite3"
+
+config :storage, ecto_repos: [Storage.Repo]
