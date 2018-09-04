@@ -31,7 +31,7 @@ pipeline:
       event: [push, tag, deployment]
     commands:
       - MIX_ENV=prod mix cmd --app bot mix release
-      - MIX_ENV=prod mix cmd --app storage mix ecto.migrate
+      - MIX_ENV=prod mix ecto.migrate
     volumes:
       - /data/apps/scarl/db:/home/app/scarl-prod.sqlite3
 
@@ -44,7 +44,8 @@ pipeline:
       dockerfile: Dockerfile
       secrets: [ docker_username, docker_password ]
       volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
+        - /var/run/docker.sock:/var/run/docker.sock
+        - /data/apps/scarl/db:/home/app/scarl-prod.sqlite3
 
   rebuild-cache:
     image: drillster/drone-volume-cache
