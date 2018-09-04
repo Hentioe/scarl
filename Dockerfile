@@ -11,6 +11,7 @@ ARG APP_HOME=/home/pord
 
 
 COPY _build/prod $APP_HOME
+COPY scarl-prod.sqlite3 "$APP_HOME/scarl-prod.sqlite3"
 
 
 WORKDIR $APP_HOME

@@ -28,8 +28,9 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env()}.exs"
+
 config :storage, Storage.Repo,
   adapter: Sqlite.Ecto2,
-  database: "scarl.sqlite3"
+  database: "scarl-#{Mix.env()}.sqlite3"
 
 config :storage, ecto_repos: [Storage.Repo]

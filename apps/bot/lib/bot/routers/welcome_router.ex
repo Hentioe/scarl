@@ -8,10 +8,16 @@ defmodule Bot.Router.WelcomeRouter do
 
   init_flag :welcome
 
+  @author_id 379265518907162637
   def handle_flag(args, msg) do
-    msg |> IO.inspect()
-    tpl_text = Enum.join(args, " ")
+    if msg.author.id == @author_id do
+      set_welcome(Enum.join(args, " "), msg)
+    else
+      Api.create_message(msg.channel_id, "您没有权限使用这个指令。")
+    end
+  end
 
+  def set_welcome(tpl_text, msg) do
     case Storage.set_welcome(%Welcome{
            server_id: msg.guild_id,
            channel_id: msg.channel_id,
@@ -23,3 +29,6 @@ defmodule Bot.Router.WelcomeRouter do
     end
   end
 end
+
+
+# 热烈欢迎新人 ^at_user^ 来到这里！我是由 ^at_author^ 所开发的^  ^专属此服务器的机器人<^bot_name^>^  ^

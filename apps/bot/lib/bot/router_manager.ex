@@ -2,9 +2,11 @@ defmodule Bot.RouterManager do
   @moduledoc """
   Bot 指令消息路由管理器
   """
-  alias Nostrum.Api
   use Agent
+
+  alias Nostrum.Api
   alias Bot.{Consumer}
+  alias Nostrum.Struct.{User}
 
   @allow_flags [
     "help",
@@ -72,34 +74,34 @@ defmodule Bot.RouterManager do
     Api.create_message(msg.channel_id, "无法理解的指令: #{prefix}")
   end
 
-  @welcome_channel_id 425_199_707_829_043_201
   def handle_no_routed_msg(msg) do
-    if msg.channel_id == @welcome_channel_id do
-      welcome(msg)
-    else
-      :ignore
+    case Storage.find_welcome(msg.guild_id, msg.channel_id) do
+      nil -> :ignore
+      w -> welcome(msg, w)
     end
   end
 
-  def welcome(msg) do
+  def welcome(msg, w) do
     {:ok, client} = Api.get_current_user()
 
     if msg.author.id == client.id do
       :ignore
     else
-      welcome(msg, client)
+      welcome(msg, w, client)
     end
   end
 
   @chat_channel_id "379541650290245634"
-  def welcome(msg, client) do
+  def welcome(msg, w, client) do
     msg_content =
       if msg.content == "" do
-        "
-热烈欢迎新人 <@#{msg.author.id}> 来到这里！我是由 <@#{@author_id}> 所开发的
-专属此服务器的机器人<#{client.username}>，
-记得转到 <\##{@chat_channel_id}> 跟大家交流哦～
-  "
+        tpl_text = w.tpl_text <> "记得转到 <\##{@chat_channel_id}> 跟大家交流哦～"
+
+        tpl_text
+        |> String.replace("^at_user^", "#{msg.author |> User.mention()}")
+        |> String.replace("^at_author^", "#{%User{id: @author_id} |> User.mention()}")
+        |> String.replace("^bot_name^", "#{client.username}")
+        |> String.replace("^  ^", "\n")
         |> String.trim()
       else
         "<@#{msg.author.id}> 记得转到 <\##{@chat_channel_id}> 跟大家交流哦～"

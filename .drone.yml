@@ -13,16 +13,27 @@ pipeline:
     volumes:
       - /data/cache/scarl:/cache
 
-  build:
+  test:
     image: bluerain/elixir-1.7-slim:mix-locals
     when:
       event: [push, tag, deployment]
     commands:
       - cp /home/app/*.secret.exs apps/bot/config/
       - mix deps.get
-      - MIX_ENV=prod mix cmd --app bot mix release
+      - MIX_ENV=test mix cmd --app storage mix ecto.migrate
+      - MIX_ENV=test mix cmd --app storage mix test
     volumes:
       - /data/apps/scarl/:/home/app
+
+  build:
+    image: bluerain/elixir-1.7-slim:mix-locals
+    when:
+      event: [push, tag, deployment]
+    commands:
+      - MIX_ENV=prod mix cmd --app bot mix release
+      - MIX_ENV=prod mix cmd --app storage mix ecto.migrate
+    volumes:
+      - /data/apps/scarl/db:/home/app/scarl-prod.sqlite3
 
   publish:
       image: plugins/docker
