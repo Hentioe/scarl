@@ -8,6 +8,7 @@ pipeline:
     image: drillster/drone-volume-cache
     restore: true
     mount:
+      - _build
       - deps
     volumes:
       - /data/cache/scarl:/cache
@@ -36,6 +37,7 @@ pipeline:
     image: drillster/drone-volume-cache
     rebuild: true
     mount:
+      - _build
       - deps
     volumes:
       - /data/cache/scarl:/cache
