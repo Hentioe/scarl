@@ -9,7 +9,6 @@ pipeline:
     restore: true
     mount:
       - deps
-      - _build
     volumes:
       - /data/cache/scarl:/cache
 
@@ -38,7 +37,6 @@ pipeline:
     rebuild: true
     mount:
       - deps
-      - _build
     volumes:
       - /data/cache/scarl:/cache
 
