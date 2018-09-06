@@ -1,5 +1,25 @@
 # Scarl
 
+````
+                                                                                                    
+                                 .`                                       .:`                       
+                                 +:                                       -s.                       
+                            ``.-:hys+...................................-.-+                        
+   ``           `.-::://///++oyhddyyyysssssssyyyyyyyyyyyyyyyyyyysyysyyssyo+s./-  `                  
+   :++:::///////yyssssssssyyydyhysooooooooossssssssssooooooooossssssooooos/+/+-.-+-........--:-:-   
+   :shyyyyyyyyyyhhhhhhyyyyyhhdhhhhhhhhhhhhdmdddhhhhhddhyhyyyyhdhhhhhhhhhhs/:--:://:::::::::+/+/+/   
+   .sdyyyyyhyyyyyhhhhhhhhhhhhhhhhddddddddhhddddhhhhhho:.+oooooooooooooso+.                          
+   `sdhhhhy:......----------------/dmdddyhyyydddhhhh+                                               
+   `sdhyhy-                       `ohddh./` `ohhyyyy/                                               
+   .sdhhy.                       .+syyo+..```/hdhhhd-                                               
+   -ydhs.                       :oyyyo`      `hdhhhd/                                               
+   -/:.                       ./syhh:         yhhhhds                                               
+                              .:+oo/          :hhyhhh:                                              
+                                               yhhhyy+                                              
+                                               .-.`                                                 
+                                                                                                    
+````
+
 **SCAR-L Discord 机器人**
 
 SCAR-L 机器人有多个功能，一方面为了增强 Discord 服务器管理，另一方面则是为游戏服务。
