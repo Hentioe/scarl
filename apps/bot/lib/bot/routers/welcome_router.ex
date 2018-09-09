@@ -8,7 +8,7 @@ defmodule Bot.Router.WelcomeRouter do
 
   init_flag :welcome
 
-  @author_id 379265518907162637
+  @author_id 379_265_518_907_162_637
   def handle_flag(args, msg) do
     if msg.author.id == @author_id do
       set_welcome(Enum.join(args, " "), msg)
@@ -29,6 +29,5 @@ defmodule Bot.Router.WelcomeRouter do
     end
   end
 end
-
 
 # 热烈欢迎新人 ^at_user^ 来到这里！我是由 ^at_author^ 所开发的^  ^专属此服务器的机器人<^bot_name^>^  ^

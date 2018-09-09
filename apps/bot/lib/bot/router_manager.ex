@@ -37,6 +37,11 @@ defmodule Bot.RouterManager do
       <<^prefix_name::binary-size(prefix_name_size), ^invoke_mark::binary-size(invoke_mark_size),
         data::binary>> ->
         fill_invocation = String.split(data, args_split)
+
+        fill_invocation =
+          fill_invocation
+          |> Enum.filter(fn arg -> arg != "" end)
+
         prefix = hd(fill_invocation)
         args = tl(fill_invocation)
 

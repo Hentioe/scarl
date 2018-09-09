@@ -65,7 +65,11 @@ defmodule Pubg.Records.QueryModel do
 
       if length(id) > 0, do: {:ok, hd(id)}, else: {:error, :not_found}
     else
-      error -> error
+      {:ok, %HTTPoison.Response{status_code: status_code}} ->
+        {:error, "UPSTREAM:[#{status_code}]"}
+
+      error ->
+        error
     end
   end
 
