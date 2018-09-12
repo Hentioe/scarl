@@ -1,24 +1,17 @@
 # Scarl
 
-````
-                                                                                                    
-                                 .`                                       .:`                       
-                                 +:                                       -s.                       
-                            ``.-:hys+...................................-.-+                        
-   ``           `.-::://///++oyhddyyyysssssssyyyyyyyyyyyyyyyyyyysyysyyssyo+s./-  `                  
-   :++:::///////yyssssssssyyydyhysooooooooossssssssssooooooooossssssooooos/+/+-.-+-........--:-:-   
-   :shyyyyyyyyyyhhhhhhyyyyyhhdhhhhhhhhhhhhdmdddhhhhhddhyhyyyyhdhhhhhhhhhhs/:--:://:::::::::+/+/+/   
-   .sdyyyyyhyyyyyhhhhhhhhhhhhhhhhddddddddhhddddhhhhhho:.+oooooooooooooso+.                          
-   `sdhhhhy:......----------------/dmdddyhyyydddhhhh+                                               
-   `sdhyhy-                       `ohddh./` `ohhyyyy/                                               
-   .sdhhy.                       .+syyo+..```/hdhhhd-                                               
-   -ydhs.                       :oyyyo`      `hdhhhd/                                               
-   -/:.                       ./syhh:         yhhhhds                                               
-                              .:+oo/          :hhyhhh:                                              
-                                               yhhhyy+                                              
-                                               .-.`                                                 
-                                                                                                    
-````
+                             `                               `h                    
+                            sh`                               s                    
+                  `````sss/#N##//////////////////////////////sh `                  
+    `hs``ssssss##////////N##//hhhhh//////////hhhhhh///////hh/ssss `s       ````    
+     /###################N##########NNN#####N#/##/##########/s````ss```````ssss`   
+     /#####/////////////////##NNNN##NNN#####s  `ssssssssssss                       
+     /####s                   #NN#hh``#N###/                                       
+     /###s                   s//#h`   h####/                                       
+     /##s                   h/#/`     `#####                                       
+     `                    `/##/        ####N`                                      
+                            ```        h####/                                      
+                                        /hs``
 
 **SCAR-L Discord 机器人**
 
