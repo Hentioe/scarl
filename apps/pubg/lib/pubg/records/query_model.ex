@@ -50,7 +50,7 @@ defmodule Pubg.Records.QueryModel do
   end
 
   def default_season do
-    "2018-08"
+    "2018-09"
   end
 
   def gen_user_id(model) do

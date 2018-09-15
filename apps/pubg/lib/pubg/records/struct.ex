@@ -61,11 +61,20 @@ defmodule Pubg.Records.Struct do
       end
     end
 
+
+    gen_headshot_ratio = fn ->
+      if kills_sum != 0 do
+        Float.round(headshot_kills_sum / kills_sum * 100, 1)
+      else
+        0
+      end
+    end
+
     %__MODULE__{
       rating: rating,
       grade: grade,
       kda: Float.round((kills_sum + assists_sum) / deaths_sum, 2),
-      headshot_ratio: Float.round(headshot_kills_sum / kills_sum * 100, 1),
+      headshot_ratio: gen_headshot_ratio.(),
       assists_sum: assists_sum,
       damage_dealt_avg: Kernel.trunc(damage_dealt_avg),
       deaths_sum: deaths_sum,
