@@ -30,4 +30,4 @@ defmodule Bot.Router.WelcomeRouter do
   end
 end
 
-# 热烈欢迎新人 ^at_user^ 来到这里！我是由 ^at_author^ 所开发的^  ^专属此服务器的机器人<^bot_name^>^  ^
+# 热烈欢迎新人 ^at_user^ 来到这里！我是由 ^at_author^ 所开发的^new_line^专属此服务器的机器人<^bot_name^>

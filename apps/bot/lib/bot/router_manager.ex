@@ -96,22 +96,19 @@ defmodule Bot.RouterManager do
     end
   end
 
-  @chat_channel_id "379541650290245634"
-  def welcome(msg, w, client) do
+  def welcome(%{content: content} = msg, w, client) when content == "" do
     msg_content =
-      if msg.content == "" do
-        tpl_text = w.tpl_text <> "记得转到 <\##{@chat_channel_id}> 跟大家交流哦～"
-
-        tpl_text
-        |> String.replace("^at_user^", "#{msg.author |> User.mention()}")
-        |> String.replace("^at_author^", "#{%User{id: @author_id} |> User.mention()}")
-        |> String.replace("^bot_name^", "#{client.username}")
-        |> String.replace("^  ^", "\n")
-        |> String.trim()
-      else
-        "<@#{msg.author.id}> 记得转到 <\##{@chat_channel_id}> 跟大家交流哦～"
-      end
+      w.tpl_text
+      |> String.replace("^at_user^", "#{msg.author |> User.mention()}")
+      |> String.replace("^at_author^", "#{%User{id: @author_id} |> User.mention()}")
+      |> String.replace("^bot_name^", "#{client.username}")
+      |> String.replace("^new_line^", "\n")
+      |> String.trim()
 
     Api.create_message(msg.channel_id, msg_content)
+  end
+
+  def welcome(msg, _, _) do
+    {:ok, msg}
   end
 end
