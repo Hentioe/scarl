@@ -42,14 +42,10 @@ pipeline:
     volumes:
       - /data/cache/scarl:/cache
 
-  publish:
-      image: plugins/docker
-      when:
-        event: [push, tag, deployment]
-      repo: bluerain/scarl
-      auto_tag: true
-      dockerfile: Dockerfile
-      secrets: [ docker_username, docker_password ]
+  build-image:
+      image: docker
+      commands:
+        - docker build . -t bluerain/scarl
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
 
